@@ -72,7 +72,7 @@ const userController = require("../controllers/userController");
  *      requestBody:
  *        required: true
  *        content:
- *          multipart/form-data:
+ *          application/json:
  *            schema:
  *              type: object
  *              properties:
@@ -129,7 +129,7 @@ router.post("/signup", authController.signUp);
  *      requestBody:
  *        required: true
  *        content:
- *          multipart/form-data:
+ *          application/json:
  *            schema:
  *              type: object
  *              properties:
