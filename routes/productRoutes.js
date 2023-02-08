@@ -272,6 +272,7 @@ router
   .patch(
     authController.protect,
     authController.restrictTo("admin"),
+    productController.uploadProductImage,
     productController.updateProduct
   )
   .delete(

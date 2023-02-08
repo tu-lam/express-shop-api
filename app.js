@@ -27,11 +27,12 @@ const itemRouter = require("./routes/itemRoutes");
 const orderRouter = require("./routes/orderRoutes");
 
 const User = require("./models/userModel");
+const { getPublickey } = require("./utils/key");
 
 const app = express();
 
 // config for heroku
-app.enable("trust proxy");
+// app.enable("trust proxy");
 
 // Set up CORS
 app.use(cors());
@@ -80,7 +81,7 @@ const options = {
     ExtractJwt.fromAuthHeaderAsBearerToken(),
     cookieExtractor,
   ]),
-  secretOrKey: process.env.PUBLIC_KEY,
+  secretOrKey: getPublickey(),
   algorithm: ["RS256"],
 };
 
@@ -123,7 +124,11 @@ const swaggerSpec = swaggerJsDoc({
     },
     servers: [
       {
-        url: "http://localhost:4000/api/v1",
+        url: "https://testapi.vuatruyenchu.com/api/v1",
+        description: "Development server",
+      },
+      {
+        url: "http://127.0.0.1:4000/api/v1",
         description: "Development server",
       },
     ],

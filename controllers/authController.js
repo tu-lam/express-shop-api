@@ -8,6 +8,7 @@ const AppError = require("../utils/appError");
 const sendEmail = require("../utils/email");
 
 const User = require("../models/userModel");
+const { getPrivateKey } = require("../utils/key");
 
 const signToken = (id) => {
   const payload = {
@@ -15,7 +16,7 @@ const signToken = (id) => {
     // iat: Date.now(),
   };
 
-  const token = jwt.sign(payload, process.env.PRIVATE_KEY, {
+  const token = jwt.sign(payload, getPrivateKey(), {
     expiresIn: process.env.JWT_EXPIRES_IN,
     algorithm: "RS256",
   });
@@ -34,6 +35,7 @@ const createSendToken = (user, statusCode, req, res) => {
     httpOnly: true,
     // req.headers["x-forwarded-proto"] for heroku
     secure: req.secure || req.headers["x-forwarded-proto"],
+    // secure: req.secure,
   });
 
   res.status(statusCode).json({
