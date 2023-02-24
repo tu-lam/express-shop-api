@@ -124,7 +124,7 @@ const swaggerSpec = swaggerJsDoc({
     },
     servers: [
       {
-        url: "https://testapi.vuatruyenchu.com/api/v1",
+        url: "https://express-shop-api.tulam.xyz/api/v1",
         description: "Development server",
       },
       {
