@@ -128,7 +128,7 @@ router.post("/items", authController.protect, cartController.createItemInCart);
 
 /**
  *  @swagger
- *  /cart/items:
+ *  /cart/items/{id}:
  *    patch:
  *      summary: Update a item in cart
  *      tags: [Cart]
@@ -181,7 +181,7 @@ router.patch(
 
 /**
  *  @swagger
- *  /cart/items:
+ *  /cart/items/{id}:
  *    delete:
  *      summary: Delete a item in cart
  *      tags: [Cart]
