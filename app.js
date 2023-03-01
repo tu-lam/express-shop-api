@@ -125,7 +125,7 @@ const swaggerSpec = swaggerJsDoc({
     servers: [
       {
         url: "https://express-shop-api.tulam.xyz/api/v1",
-        description: "Development server",
+        description: "Deploy server",
       },
       {
         url: "http://127.0.0.1:4000/api/v1",

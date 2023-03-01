@@ -71,12 +71,14 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   // 2) Filtered out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObject(req.body, "name", "email", "photo");
-  if (!filteredBody.name) {
-    delete filteredBody.name;
-  }
-  filteredBody.photo = req.file.filename;
+  // if (!filteredBody.name) {
+  //   delete filteredBody.name;
+  // }
 
-  if (req.file) await deletePhotoFromServer("users", req.user.photo);
+  if (req.file) {
+    filteredBody.photo = req.file.filename;
+    await deletePhotoFromServer("users", req.user.photo);
+  }
 
   // 3) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
@@ -93,8 +95,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-
-  if (req.user.photo) await deletePhotoFromServer("users",req.user.photo);
+  if (req.user.photo) await deletePhotoFromServer("users", req.user.photo);
 
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
