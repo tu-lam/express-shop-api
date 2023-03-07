@@ -4,10 +4,35 @@ const AppError = require("../utils/appError");
 
 const Order = require("../models/orderModel");
 const User = require("../models/userModel");
+const ApiFeatures = require("../utils/apiFeatures");
 
-// exports.getCheckoutSession = catchAsync(async (req, res, next) => {});
+// exports.getAllOrders = factory.getAll(Order);
 
-exports.getAllOrders = factory.getAll(Order);
+exports.getAllOrders = catchAsync(async (req, res, next) => {
+  let filterObject = {};
+
+  if (req.user.role == "user") {
+    filterObject = { user: req.user.id };
+  }
+
+  console.log(req.user);
+
+  const features = new ApiFeatures(Order.find(filterObject), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const orders = await features.query;
+
+  res.status(200).json({
+    status: "success",
+    results: orders.length,
+    data: {
+      orders,
+    },
+  });
+});
 
 exports.getOrder = catchAsync(async (req, res, next) => {});
 
