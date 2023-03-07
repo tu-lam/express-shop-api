@@ -21,7 +21,7 @@ exports.getAllItemsInCart = catchAsync(async (req, res, next) => {
     status: "success",
     results: user.cart.length,
     data: {
-      cart: user.cart,
+      items: user.cart,
     },
   });
 });
