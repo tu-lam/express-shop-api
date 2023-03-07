@@ -6,16 +6,12 @@ const Order = require("../models/orderModel");
 const User = require("../models/userModel");
 const ApiFeatures = require("../utils/apiFeatures");
 
-// exports.getAllOrders = factory.getAll(Order);
-
 exports.getAllOrders = catchAsync(async (req, res, next) => {
   let filterObject = {};
 
   if (req.user.role == "user") {
     filterObject = { user: req.user.id };
   }
-
-  console.log(req.user);
 
   const features = new ApiFeatures(Order.find(filterObject), req.query)
     .filter()
