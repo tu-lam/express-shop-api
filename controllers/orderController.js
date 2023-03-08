@@ -35,7 +35,21 @@ exports.getOrder = catchAsync(async (req, res, next) => {});
 exports.createOrder = catchAsync(async (req, res, next) => {
   const { address, phone } = req.body;
 
-  const user = await User.findById(req.user.id).select("+cart");
+  const user = await User.findById(req.user.id)
+    .select("+cart")
+    .populate("cart")
+    .populate({
+      path: "cart",
+      populate: {
+        path: "product",
+        model: "Product",
+      },
+    });
+  console.log(user.cart);
+
+  const total = user.cart.reduce((accumulator, currentItem) => {
+    return accumulator + currentItem.product.price * currentItem.quantity;
+  }, 0);
 
   if (user.cart.length === 0) {
     return next(new AppError(404, "Required item in cart to order."));
@@ -46,6 +60,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     address,
     phone,
     items: user.cart,
+    total,
   });
 
   // clear cart
