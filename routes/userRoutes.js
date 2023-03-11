@@ -291,7 +291,7 @@ router.patch("/reset-password/:token", authController.resetPassword);
  *      requestBody:
  *        required: true
  *        content:
- *          multipart/form-data:
+ *          application/json:
  *            schema:
  *              type: object
  *              properties:
