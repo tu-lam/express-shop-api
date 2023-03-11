@@ -30,7 +30,34 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getOrder = catchAsync(async (req, res, next) => {});
+exports.getOrder = catchAsync(async (req, res, next) => {
+  console.log(req.user.id);
+
+  const order = await Order.findById(req.params.id)
+    .populate("items")
+    .populate({
+      path: "items",
+      populate: {
+        path: "product",
+        model: "Product",
+      },
+    });
+
+  if (!order) {
+    return next(new AppError(404, "No order found with that ID"));
+  }
+
+  if (req.user.role !== "admin" && order.user.toString() !== req.user.id) {
+    return next(new AppError(401, "Unauthorized"));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      order,
+    },
+  });
+});
 
 exports.createOrder = catchAsync(async (req, res, next) => {
   const { address, phone } = req.body;
