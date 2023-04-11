@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema({
+  category: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Category",
+  },
   name: {
     type: String,
     required: [true, "A product must have a name"],
@@ -26,6 +30,14 @@ const productSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+});
+
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    model: "Category",
+  });
+  next();
 });
 
 module.exports = mongoose.model("Product", productSchema);

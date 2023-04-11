@@ -31,7 +31,7 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrder = catchAsync(async (req, res, next) => {
-  console.log(req.user.id);
+  // console.log(req.user.id);
 
   const order = await Order.findById(req.params.id)
     .populate("items")
