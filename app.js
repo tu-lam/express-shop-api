@@ -25,6 +25,7 @@ const reviewRouter = require("./routes/reviewRoutes");
 const cartRouter = require("./routes/cartRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const categoryRouter = require("./routes/categoryRoutes");
+const notificationRouter = require("./routes/notificationRoutes");
 
 const User = require("./models/userModel");
 const { getPublickey } = require("./utils/key");
@@ -162,6 +163,7 @@ app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/categories", categoryRouter);
+app.use("/api/v1/notifications", notificationRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(404, `Can't find ${req.originalUrl} on this server!`));

@@ -1,8 +1,25 @@
 const factory = require("../utils/handlerFactory");
 const Category = require("../models/categoryModel");
 const catchAsync = require("../utils/catchAsync");
+const ApiFeatures = require("../utils/apiFeatures");
 
-exports.getAllCategories = factory.getAll(Category);
+exports.getAllCategories = catchAsync(async (req, res, next) => {
+  const features = new ApiFeatures(Category.find({}), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const documents = await features.query;
+
+  res.status(200).json({
+    status: "success",
+    results: documents.length,
+    data: {
+      categories: documents,
+    },
+  });
+});
 
 exports.getCategory = catchAsync(async (req, res, next) => {
   const document = await Category.findById(req.params.id);

@@ -1,5 +1,5 @@
 const express = require("express");
-const categoryController = require("../controllers/categoryController");
+const notificationController = require("../controllers/notificationController");
 const authController = require("../controllers/authController");
 
 const router = express.Router({ mergeParams: true });
@@ -8,40 +8,40 @@ const router = express.Router({ mergeParams: true });
  *  @swagger
  *  components:
  *    schemas:
- *      Category:
+ *      Notification:
  *        type: object
  *        properties:
  *          id:
  *            type: string
  *            description: The auto-generated id of the category
- *          name:
+ *          title:
  *            type: string
- *            description: The name of the category
- *          description:
+ *            description: The title of the notification
+ *          content:
  *            type: string
- *            description: The description of the category
+ *            description: The content of the notification
  *        example:
  *          id: 628265da16c4207d5daba194
- *          name: Nuoc giai khat
- *          description: Mo ta danh muc
+ *          title: Thong bao 1
+ *          content: Noi dung thong bao 1
  */
 
 /**
  *  @swagger
  *  tags:
- *    name: Categories
- *    description: The categories managing API
+ *    name: Notifications
+ *    description: The notifications managing API
  */
 
 /**
  *  @swagger
- *  /categories:
+ *  /notifications:
  *    get:
- *      summary: Return the list of all the categories
- *      tags: [Categories]
+ *      summary: Return the list of all the notifications
+ *      tags: [Notifications]
  *      responses:
  *        200:
- *          description: The list of the categories
+ *          description: The list of the notifications
  *          content:
  *            application/json:
  *              schema:
@@ -58,14 +58,14 @@ const router = express.Router({ mergeParams: true });
  *                  data:
  *                    type: object
  *                    properties:
- *                      categories:
+ *                      notifications:
  *                        type: array
  *                        items:
- *                          $ref: '#/components/schemas/Category'
+ *                          $ref: '#/components/schemas/Notification'
  *
  *    post:
- *      summary: Create a new category
- *      tags: [Categories]
+ *      summary: Create a new notification
+ *      tags: [Notifications]
  *      security:
  *        - bearerAuth: []
  *        - cookieAuth: []
@@ -78,9 +78,11 @@ const router = express.Router({ mergeParams: true });
  *              properties:
  *                name:
  *                  type: string
+ *                description:
+ *                  type: string
  *      responses:
  *        201:
- *          description: The category was created successfully
+ *          description: The notification was created successfully
  *          content:
  *           application/json:
  *             schema:
@@ -93,8 +95,8 @@ const router = express.Router({ mergeParams: true });
  *                  data:
  *                    type: object
  *                    properties:
- *                      category:
- *                        $ref: '#/components/schemas/Category'
+ *                      notification:
+ *                        $ref: '#/components/schemas/Notification'
  *
  *        401:
  *          description: Unauthorized
@@ -102,29 +104,29 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .get(categoryController.getAllCategories)
+  .get(notificationController.getAllNotifications)
   .post(
     authController.protect,
     authController.restrictTo("admin"),
-    categoryController.createCategory
+    notificationController.createNotification
   );
 
 /**
  *  @swagger
- *  /categories/{categoryId}:
+ *  /notifications/{notificationId}:
  *    get:
- *      summary: Get the review by id
- *      tags: [Categories]
+ *      summary: Get the notification by id
+ *      tags: [Notifications]
  *      parameters:
  *        - in: path
- *          name: categoryId
+ *          name: notificationId
  *          schema:
  *            type: string
  *          required: true
- *          description: The category id
+ *          description: The notification id
  *      responses:
  *        200:
- *          description: The category description by id
+ *          description: The notification by id
  *          content:
  *            application/json:
  *              schema:
@@ -137,23 +139,23 @@ router
  *                  data:
  *                    type: object
  *                    properties:
- *                      category:
- *                        $ref: '#/components/schemas/Category'
+ *                      notification:
+ *                        $ref: '#/components/schemas/Notification'
  *        404:
- *          description: The category was not found
+ *          description: The notification was not found
  *    patch:
- *      summary: Update the category by id
- *      tags: [Categories]
+ *      summary: Update the notification by id
+ *      tags: [Notifications]
  *      security:
  *        - bearerAuth: []
  *        - cookieAuth: []
  *      parameters:
  *        - in: path
- *          name: categoryId
+ *          name: notificationId
  *          schema:
  *            type: string
  *          required: true
- *          description: The category id
+ *          description: The notification id
  *      requestBody:
  *        required: true
  *        content:
@@ -161,11 +163,13 @@ router
  *            schema:
  *              type: object
  *              properties:
- *                name:
+ *                title:
+ *                  type: string
+ *                description:
  *                  type: string
  *      responses:
  *        200:
- *          description: The category was updated successfully
+ *          description: The notification was updated successfully
  *          content:
  *            application/json:
  *              schema:
@@ -178,26 +182,26 @@ router
  *                  data:
  *                    type: object
  *                    properties:
- *                      category:
- *                        $ref: '#/components/schemas/Category'
+ *                      notification:
+ *                        $ref: '#/components/schemas/Notification'
  *        401:
  *          description: Unauthorized
  *    delete:
- *      summary: Delete the category by id
- *      tags: [Categories]
+ *      summary: Delete the notification by id
+ *      tags: [Notifications]
  *      security:
  *        - bearerAuth: []
  *        - cookieAuth: []
  *      parameters:
  *        - in: path
- *          name: categoryId
+ *          name: notificationId
  *          schema:
  *            type: string
  *          required: true
- *          description: The category id
+ *          description: The notification id
  *      responses:
  *        204:
- *          description: The category was successfully deleted
+ *          description: The notification was successfully deleted
  *          content:
  *            application/json:
  *              schema:
@@ -213,16 +217,16 @@ router
  */
 router
   .route("/:id")
-  .get(categoryController.getCategory)
+  .get(notificationController.getAllNotifications)
   .patch(
     authController.protect,
     authController.restrictTo("admin"),
-    categoryController.updateCategory
+    notificationController.getNotification
   )
   .delete(
     authController.protect,
     authController.restrictTo("admin"),
-    categoryController.deleteCategory
+    notificationController.deleteNotification
   );
 
 module.exports = router;
