@@ -13,6 +13,12 @@ class ApiFeatures {
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
+    // Add regex matching for string fields
+    queryStr = queryStr.replace(
+      /"([^"]+)":\s*"\/([^"]+)\/"/g,
+      `"$1": { "$regex": "$2", "$options": "i" }`
+    );
+
     this.query = this.query.find(JSON.parse(queryStr));
 
     return this;
