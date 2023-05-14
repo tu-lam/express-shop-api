@@ -221,7 +221,7 @@ router
   .patch(
     authController.protect,
     authController.restrictTo("admin"),
-    notificationController.getNotification
+    notificationController.updateNotification
   )
   .delete(
     authController.protect,
