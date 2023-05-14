@@ -217,7 +217,7 @@ router
  */
 router
   .route("/:id")
-  .get(notificationController.getAllNotifications)
+  .get(notificationController.getNotification)
   .patch(
     authController.protect,
     authController.restrictTo("admin"),

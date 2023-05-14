@@ -58,7 +58,7 @@ module.exports = (err, req, res, next) => {
     // console.log(JSON.stringify(err, null, 4));
     sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === "production") {
-    // console.log(JSON.stringify(err, null, 4));
+    console.log(JSON.stringify(err, null, 4));
 
     let error = { ...err, message: err.message };
 
