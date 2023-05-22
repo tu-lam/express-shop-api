@@ -172,11 +172,13 @@ router
  *        404:
  *          description: The order was not found
  */
-router.route("/:id").get(authController.protect, orderController.getOrder);
-// .patch(
-//   authController.protect,
-//   authController.restrictTo("admin"),
-//   orderController.updateOrder
-// );
+router
+  .route("/:id")
+  .get(authController.protect, orderController.getOrder)
+  .patch(
+    authController.protect,
+    authController.restrictTo("admin"),
+    orderController.updateOrder
+  );
 
 module.exports = router;
