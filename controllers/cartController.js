@@ -29,7 +29,6 @@ exports.getAllItemsInCart = catchAsync(async (req, res, next) => {
 exports.createItemInCart = catchAsync(async (req, res, next) => {
   const { product, quantity, option } = req.body;
 
-  // populate product in cart
   const currentUserPopulateProduct = await req.user.populate({
     path: "cart",
     populate: {
@@ -38,7 +37,6 @@ exports.createItemInCart = catchAsync(async (req, res, next) => {
     },
   });
 
-  // check if item is already in cart
   const existedItem = currentUserPopulateProduct.cart.find(
     (item) => item.product.id == product && item.option == option
   );
@@ -46,7 +44,6 @@ exports.createItemInCart = catchAsync(async (req, res, next) => {
   let item;
 
   if (existedItem) {
-    // if item is already in cart, increase quantity
     const updatedQuantity = Number(existedItem.quantity) + Number(quantity);
     item = await Item.findByIdAndUpdate(
       existedItem.id,
@@ -57,7 +54,6 @@ exports.createItemInCart = catchAsync(async (req, res, next) => {
       }
     );
   } else {
-    // if item is not in cart, create new item
     item = await Item.create({
       product,
       quantity,
@@ -84,7 +80,6 @@ exports.updateItemInCart = catchAsync(async (req, res, next) => {
     return next(new AppError(404, `No item found with that ID`));
   }
 
-  // update
   const filteredBody = filterObject(req.body, "quantity");
 
   const updatedItem = await Item.findByIdAndUpdate(id, filteredBody, {
@@ -109,7 +104,6 @@ exports.deleteItemInCart = catchAsync(async (req, res, next) => {
     return next(new AppError(404, `No item found with that ID`));
   }
 
-  // delete item in cart
   await User.findByIdAndUpdate(
     req.user.id,
     {
@@ -118,7 +112,6 @@ exports.deleteItemInCart = catchAsync(async (req, res, next) => {
     { new: true }
   );
 
-  // delete item
   await Item.findByIdAndDelete(id);
 
   res.status(204).json({ status: "success", data: null });

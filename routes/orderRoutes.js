@@ -50,12 +50,6 @@ const router = express.Router();
  *    description: The order managing API
  */
 
-// router.get(
-//   "/checkout-session/:orderId",
-//   authController.protect,
-//   orderController.getCheckoutSession
-// );
-
 /**
  *  @swagger
  *  /orders:

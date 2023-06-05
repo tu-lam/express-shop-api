@@ -28,14 +28,11 @@ const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user.id);
 
   res.cookie("jwt", token, {
-    // origin: "http://localhost:3000/",
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    // req.headers["x-forwarded-proto"] for heroku
     secure: req.secure || req.headers["x-forwarded-proto"],
-    // secure: req.secure,
   });
 
   res.status(statusCode).json({
@@ -69,7 +66,6 @@ exports.signIn = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne({ email }).select("+password");
 
-  //fail user or fail password
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return next(new AppError(404, "Incorrect username or password"));
   }
@@ -99,17 +95,14 @@ exports.restrictTo = (...roles) => {
 };
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-  // 1) Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     return next(new AppError(404, "There is no user with email address."));
   }
 
-  // 2) Generate the random reset token
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  // 3) Send it to user's email
   const resetURL = `${req.protocol}://${req.get(
     "host"
   )}/api/v1/users/resetPassword/${resetToken}`;
@@ -142,7 +135,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  // 1) Get user based on the token
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -153,7 +145,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     passwordResetExpires: { $gt: Date.now() },
   });
 
-  // 2) If token has not expired, and there is user, set the new password
   if (!user) {
     return next(new AppError(400, "Token is invalid or has expired"));
   }
@@ -164,16 +155,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordResetExpires = undefined;
   await user.save();
 
-  // 3) Update changedPasswordAt property for the user
-  // 4) Log the user in, send JWT
   createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  // 1) Get user from collection
   const user = await User.findById(req.user.id).select("+password");
 
-  // 2) Check if POSTed current password is correct
   const compareResult = await bcrypt.compare(
     req.body.currentPassword,
     user.password
@@ -183,13 +170,10 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     return next(new AppError(401, "Your current password is wrong."));
   }
 
-  // 3) If so, update password
   user.password = req.body.password;
   user.confirmPassword = req.body.confirmPassword;
 
-  // User.findByIdAndUpdate will NOT work as intended!
   await user.save();
 
-  // 4) Log user in, send JWT
   createSendToken(user, 200, req, res);
 });

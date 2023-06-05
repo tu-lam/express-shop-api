@@ -37,11 +37,6 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   next();
 });
 
-// exports.getMe = catchAsync(async (req, res, next) => {
-//   req.params.id = req.user.id;
-//   next();
-// });
-
 exports.getMe = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id);
 
@@ -59,7 +54,6 @@ exports.getMe = catchAsync(async (req, res, next) => {
 exports.updateMe = catchAsync(async (req, res, next) => {
   const { password, passwordConfirm } = req.body;
 
-  // 1) Create error if user POSTs password data
   if (password || passwordConfirm) {
     return next(
       new AppError(
@@ -69,18 +63,13 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 2) Filtered out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObject(req.body, "name", "email", "photo");
-  // if (!filteredBody.name) {
-  //   delete filteredBody.name;
-  // }
 
   if (req.file) {
     filteredBody.photo = req.file.filename;
     await deletePhotoFromServer("users", req.user.photo);
   }
 
-  // 3) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
@@ -107,7 +96,3 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
-
-// exports.createUser = factory.createOne(User);
-// exports.updateUser = factory.updateOne(User);
-// exports.deleteUser = factory.deleteOne(User);

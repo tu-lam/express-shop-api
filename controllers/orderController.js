@@ -31,8 +31,6 @@ exports.getAllOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.getOrder = catchAsync(async (req, res, next) => {
-  // console.log(req.user.id);
-
   const order = await Order.findById(req.params.id)
     .populate("items")
     .populate({
@@ -90,7 +88,6 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     total,
   });
 
-  // clear cart
   user.cart = [];
   await user.save({ validateBeforeSave: false });
 
@@ -122,10 +119,3 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-//
-// exports.getAllProducts = factory.getAll(Product);
-// exports.getProduct = factory.getOne(Product);
-// exports.createProduct = factory.createOne(Product);
-// exports.updateProduct = factory.updateOne(Product);
-// exports.deleteProduct = factory.deleteOne(Product);

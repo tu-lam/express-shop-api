@@ -40,8 +40,6 @@ const sendErrorDev = (err, req, res) => {
 const sendErrorProd = (err, req, res) => {
   if (req.originalUrl.startsWith("/api")) {
     if (err.isOperational) {
-      // console.log("sendErrorProd");
-      // console.log(err.statusCode, err.status, err.message);
       return res.status(err.statusCode).json({
         status: err.status,
         message: err.message,
@@ -55,7 +53,6 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || "error";
 
   if (process.env.NODE_ENV === "development") {
-    // console.log(JSON.stringify(err, null, 4));
     sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === "production") {
     console.log(JSON.stringify(err, null, 4));
