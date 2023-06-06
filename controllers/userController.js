@@ -67,7 +67,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   if (req.file) {
     filteredBody.photo = req.file.filename;
-    await deletePhotoFromServer("users", req.user.photo);
   }
 
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
@@ -84,8 +83,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  if (req.user.photo) await deletePhotoFromServer("users", req.user.photo);
-
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
   res.status(204).json({

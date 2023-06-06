@@ -71,8 +71,6 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
     return next(new AppError(404, `No product found with that ID`));
   }
 
-  if (product.image) await deleteImageFromServer("products", product.image);
-
   res.status(204).json({
     status: "success",
     data: null,
